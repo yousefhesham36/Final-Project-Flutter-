@@ -1,0 +1,292 @@
+{
+	"info": {
+		"_postman_id": "5eee7c16-5298-4998-a2d2-aa4d2fcefbb0",
+		"name": "Flutter Tanta",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13570397"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "Amira",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Abdelhameed",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "01093142026",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Egytp, Zamalk",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "amira@em.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "124312",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v2/register",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v2",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\" : \"97001aa611cc2216afc73a8d94078250538aef166b9fb1be3d0e8b4f5f49b456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v2/logout",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v2",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "aya@em.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "124312",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v2/login",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v2",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\" :\"514cd141152b48d3cea9afdb02b17ca998b4e1f586245aeefbd3ffa08be1e79f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v2/profile",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v2",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category and products",
+			"item": [
+				{
+					"name": "categories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v1/all/categories",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"all",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "category_products",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v1/products/category/Audio",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products",
+								"category",
+								"Audio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ib.jamalmoallart.com/api/v1/all/products",
+							"protocol": "https",
+							"host": [
+								"ib",
+								"jamalmoallart",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"all",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
