@@ -26,7 +26,7 @@ class AuthService {
 
     List<String> usersJson = prefs.getStringList('users') ?? [];
 
-    print('Users before register: $usersJson'); // طباعة قبل الإضافة
+    print('Users before register: $usersJson'); 
 
     final existingUser = usersJson.firstWhere(
       (userStr) => User.fromJson(jsonDecode(userStr)).email == email,
@@ -40,7 +40,7 @@ class AuthService {
     usersJson.add(jsonEncode(newUser.toJson()));
     await prefs.setStringList('users', usersJson);
 
-    print('Users after register: $usersJson'); // طباعة بعد الإضافة
+    print('Users after register: $usersJson'); 
 
     await prefs.setString('user', jsonEncode(newUser.toJson()));
     _cachedUser = newUser;
@@ -57,7 +57,7 @@ class AuthService {
 
     print(
       'Users at login: $usersJson',
-    ); // طباعة بيانات المستخدمين عند تسجيل الدخول
+    ); 
 
     for (final userStr in usersJson) {
       final user = User.fromJson(jsonDecode(userStr));
