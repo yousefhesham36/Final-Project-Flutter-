@@ -89,7 +89,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       "price": 150,
       "discount": 8,
       "image":
-          "https://ae01.alicdn.com/kf/S2fda3ad012754647be6e06cf82911632V.jpg",
+          "https://images.pexels.com/photos/31748137/pexels-photo-31748137/free-photo-of-portable-black-speaker-with-handle-on-table.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
     {
       "id": 8,
@@ -128,7 +128,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   @override
   void initState() {
     super.initState();
-    allProducts = productData.map((item) => Product.fromJson(item)).toList();
+    allProducts = productData.map((item) {
+      // print("++++ $item");
+      return Product.fromJson(item);
+    }).toList();
     _loadProducts();
   }
 
@@ -156,40 +159,22 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       appBar: AppBar(
         title: Text(
           widget.category,
-          style: const TextStyle(color: AppColors.white),
+          style: const TextStyle(color: AppColors.primaryBlue),
         ),
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryBlue),
-            )
-          : _errorMessage != null
-          ? Center(
-              child: Text(
-                _errorMessage!,
-                style: const TextStyle(fontSize: 18, color: AppColors.red),
-              ),
-            )
-          : _products.isEmpty
-          ? const Center(
-              child: Text(
-                'No products available',
-                style: TextStyle(fontSize: 18, color: AppColors.grey),
-              ),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.all(16.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.85,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: _products.length,
-              itemBuilder: (context, index) {
-                return ProductCard(product: _products[index]);
-              },
-            ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.85,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+        ),
+        itemCount: _products.length,
+        itemBuilder: (context, index) {
+          return ProductCard(product: _products[index]);
+        },
+      ),
     );
   }
 }

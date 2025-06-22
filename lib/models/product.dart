@@ -44,19 +44,14 @@ class Product {
     'smartphone':
         'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9',
     'bluetooth': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e',
-    // Add other products if needed
   };
 
   String get effectiveImage {
-    if (imageUrl.isNotEmpty && _isValidUrl(imageUrl)) {
+    if (imageUrl.isNotEmpty) {
       return imageUrl;
     }
     return _productImageMap[name.toLowerCase()] ??
         'https://via.placeholder.com/150';
-  }
-
-  bool _isValidUrl(String url) {
-    return Uri.tryParse(url)?.hasAbsolutePath ?? false;
   }
 
   @override

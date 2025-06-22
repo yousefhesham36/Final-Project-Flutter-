@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/cart_item.dart';
-import '../models/product.dart';
-import '../services/api_service.dart';
+// import '../models/product.dart';
+// import '../services/api_service.dart';
 import '../constants/app_colors.dart';
 import 'checkout_screen.dart';
 
@@ -16,7 +16,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   List<CartItem> _cartItems = [];
-  List<Product> _products = [];
   bool _isLoading = true;
 
   @override
@@ -29,9 +28,10 @@ class _CartScreenState extends State<CartScreen> {
     final prefs = await SharedPreferences.getInstance();
     final cartJson = prefs.getString('cart') ?? '[]';
     print('Loaded cart JSON: $cartJson'); // Debug print
-    final cart = (jsonDecode(cartJson) as List)
-        .map((item) => CartItem.fromJson(item))
-        .toList();
+    final cart = (jsonDecode(cartJson) as List).map((item) {
+      print("here+ $item");
+      return CartItem.fromJson(item);
+    }).toList();
     setState(() {
       _cartItems = cart;
       _isLoading = false;
@@ -41,7 +41,9 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _updateCart() async {
     final prefs = await SharedPreferences.getInstance();
     final cartJson = jsonEncode(
-      _cartItems.map((item) => item.toJson()).toList(),
+      _cartItems.map((item) {
+        return item.toJson();
+      }).toList(),
     );
     await prefs.setString('cart', cartJson);
     print('Updated cart JSON: $cartJson'); // Debug print

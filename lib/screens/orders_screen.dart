@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/order.dart';
 import '../constants/app_colors.dart';
+import 'home_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -24,7 +25,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Future<void> _loadOrders() async {
     final prefs = await SharedPreferences.getInstance();
     final ordersJson = prefs.getString('orders') ?? '[]';
-    print('Loaded orders JSON: $ordersJson'); // Debug print
     final orders = (jsonDecode(ordersJson) as List)
         .map((item) => Order.fromJson(item as Map<String, dynamic>))
         .toList();
@@ -32,17 +32,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
       _orders = orders;
       _isLoading = false;
     });
-  }
-
-  String _formatDateSimple(String dateStr) {
-    try {
-      final dateTime = DateTime.parse(dateStr);
-      return "${dateTime.day.toString().padLeft(2, '0')}/"
-          "${dateTime.month.toString().padLeft(2, '0')}/"
-          "${dateTime.year}";
-    } catch (e) {
-      return dateStr;
-    }
   }
 
   @override
@@ -55,6 +44,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
         ),
         backgroundColor: AppColors.primaryBlue,
         elevation: 2,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          },
+        ),
       ),
       body: _isLoading
           ? const Center(
@@ -111,16 +109,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         color: AppColors.primaryBlue,
                       ),
                     ),
-                    subtitle: Text(
-                      _formatDateSimple(order.date),
-                      style: TextStyle(
-                        color: AppColors.grey.withOpacity(0.7),
-                        fontSize: 14,
-                      ),
-                    ),
                     children: [
                       ...order.items.asMap().entries.map((entry) {
-                        final itemIndex = entry.key;
                         final item = entry.value;
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6),
@@ -128,15 +118,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Image.network(
-                                item
-                                    .product
-                                    .effectiveImage, // Use effectiveImage
+                                item.product.effectiveImage,
                                 width: 60,
                                 height: 60,
                                 fit: BoxFit.cover,
                                 loadingBuilder:
                                     (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                      if (loadingProgress == null) {
+                                        return child;
+                                      }
                                       return const CircularProgressIndicator(
                                         color: AppColors.primaryBlue,
                                       );

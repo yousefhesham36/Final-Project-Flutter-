@@ -4,14 +4,8 @@ class Order {
   final int id;
   final List<CartItem> items;
   final double totalPrice;
-  final String date;
 
-  Order({
-    required this.id,
-    required this.items,
-    required this.totalPrice,
-    required this.date,
-  });
+  Order({required this.id, required this.items, required this.totalPrice});
 
   factory Order.fromJson(Map<String, dynamic> json) {
     final itemsJson = json['items'] as List? ?? [];
@@ -21,7 +15,6 @@ class Order {
           .map((item) => CartItem.fromJson(item as Map<String, dynamic>))
           .toList(),
       totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0.0,
-      date: json['date'] as String? ?? '',
     );
   }
 
@@ -30,7 +23,6 @@ class Order {
       'id': id,
       'items': items.map((item) => item.toJson()).toList(),
       'totalPrice': totalPrice,
-      'date': date,
     };
   }
 }

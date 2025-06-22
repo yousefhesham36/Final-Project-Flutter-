@@ -24,13 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 2));
     final isLoggedIn = await _authService.isLoggedIn();
     if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              isLoggedIn ? const HomeScreen() : const LoginScreen(),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, isLoggedIn ? '/home' : '/login');
     }
   }
 
@@ -49,8 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.shopping_bag, size: 100, color: AppColors.white),
-              const SizedBox(height: 16),
               Text(
                 'Tanta Shop',
                 style: TextStyle(

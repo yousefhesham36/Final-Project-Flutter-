@@ -146,20 +146,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData() async {
     try {
       setState(() => _isLoading = true);
+
       // Load user data
-      final user = await _authService.getUser().timeout(
-        const Duration(seconds: 10),
-      );
+      final user = await _authService.getUser();
       setState(() {
-        _userName = user != null
-            ? '${user.firstName} ${user.lastName}'
-            : 'Guest';
+        if (user != null) {
+          _userName = '${user.firstName} ${user.lastName}';
+        }
       });
 
       // Load categories
-      final categories = await _apiService.getCategories().timeout(
-        const Duration(seconds: 10),
-      );
+      final categories = await _apiService.getCategories();
       setState(() {
         _categories = categories;
         _isLoading = false;
@@ -169,7 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     } catch (e) {
       setState(() {
-        _userName = 'Guest';
         _categories = [];
         _isLoading = false;
         _errorMessage = 'Failed to load data. Please try again.';
@@ -222,99 +218,46 @@ class _HomeScreenState extends State<HomeScreen> {
           ? const Center(
               child: CircularProgressIndicator(color: AppColors.primaryBlue),
             )
-          : _errorMessage != null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _errorMessage!,
-                    style: const TextStyle(fontSize: 18, color: AppColors.red),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLoading = true;
-                        _errorMessage = null;
-                      });
-                      _loadData();
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            )
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (_products.isNotEmpty)
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 450,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        viewportFraction: 0.9,
-                      ),
-                      items: _products.take(5).map((product) {
-                        return Builder(
-                          builder: (context) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.grey.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Image.network(
-                                  product.imageUrl.isNotEmpty
-                                      ? product.imageUrl
-                                      : 'https://via.placeholder.com/150',
-                                  fit: BoxFit.cover,
-                                  loadingBuilder: (context, child, loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value:
-                                            loadingProgress
-                                                    .expectedTotalBytes !=
-                                                null
-                                            ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  (loadingProgress
-                                                          .expectedTotalBytes ??
-                                                      1)
-                                            : null,
-                                        color: AppColors.primaryBlue,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return const Icon(
-                                      Icons.broken_image,
-                                      color: AppColors.red,
-                                      size: 50,
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 450,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.9,
                     ),
-                  const SizedBox(height: 16),
+                    items: _products.take(8).map((product) {
+                      return Builder(
+                        builder: (context) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.grey.withOpacity(0.3),
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                product.imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stack) =>
+                                    const Icon(Icons.broken_image, size: 50),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
                   const Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Text(
@@ -336,15 +279,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             CategoryCard(category: _categories[index]),
                       ),
                     ),
-                  if (_categories.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        'No categories available',
-                        style: TextStyle(fontSize: 16, color: AppColors.grey),
-                      ),
-                    ),
-                  const SizedBox(height: 16),
                   const Padding(
                     padding: EdgeInsets.all(12),
                     child: Text(
@@ -356,38 +290,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  if (_products.isNotEmpty)
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.85,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
-                          ),
-                      itemCount: _products.length,
-                      itemBuilder: (context, index) =>
-                          ProductCard(product: _products[index]),
-                    ),
-                  if (_products.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        'No products available',
-                        style: TextStyle(fontSize: 16, color: AppColors.grey),
-                      ),
-                    ),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.85,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                        ),
+                    itemCount: _products.length,
+                    itemBuilder: (context, index) =>
+                        ProductCard(product: _products[index]),
+                  ),
                 ],
               ),
             ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.white,
+        currentIndex: 0,
         selectedItemColor: AppColors.primaryBlue,
         unselectedItemColor: AppColors.black87,
-        currentIndex: 0,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
@@ -397,30 +321,26 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Orders'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
-        onTap: (index) async {
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const CartScreen()),
-            );
-          } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const OrdersScreen()),
-            );
-          } else if (index == 3) {
-            final user = await _authService.getUser();
-            if (user != null) {
+        onTap: (index) {
+          switch (index) {
+            case 1:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CartScreen()),
+              );
+              break;
+            case 2:
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const OrdersScreen()),
+              );
+              break;
+            case 3:
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const ProfileScreen()),
               );
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              );
-            }
+              break;
           }
         },
       ),

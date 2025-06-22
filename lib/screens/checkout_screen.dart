@@ -27,17 +27,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       try {
         final prefs = await SharedPreferences.getInstance();
         final ordersJson = prefs.getString('orders') ?? '[]';
-        print('Loaded orders JSON: $ordersJson'); // Debug print
+        print('Loaded orders JSON: $ordersJson');
 
-        // Migration logic for old orders
         final orders = <Order>[];
         final decodedOrders = jsonDecode(ordersJson) as List;
         for (var item in decodedOrders) {
           try {
             orders.add(Order.fromJson(item as Map<String, dynamic>));
           } catch (e) {
-            print('Error migrating order: $e'); // Debug print
-            // Skip invalid orders
             continue;
           }
         }
@@ -50,7 +47,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           id: orders.isEmpty ? 1 : orders.length + 1,
           items: widget.cartItems,
           totalPrice: totalPrice,
-          date: DateTime.now().toIso8601String(),
+          // date: DateTime.now().toIso8601String(),
         );
         orders.add(newOrder);
 
@@ -58,7 +55,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           orders.map((order) => order.toJson()).toList(),
         );
         await prefs.setString('orders', newOrdersJson);
-        print('Saved orders JSON: $newOrdersJson'); // Debug print
+        print('Saved orders JSON: $newOrdersJson');
 
         await prefs.remove('cart');
         if (mounted) {
@@ -69,13 +66,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Order placed successfully')),
           );
-        }
-      } catch (e) {
-        print('Error placing order: $e'); // Debug print
-        if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error placing order: $e')));
         }
       } finally {
         if (mounted) {

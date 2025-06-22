@@ -4,12 +4,7 @@ class Category {
   Category({required this.name});
 
   factory Category.fromJson(dynamic json) {
-    if (json is String) {
-      return Category(name: json);
-    } else if (json is Map<String, dynamic>) {
-      return Category(name: json['name'] as String? ?? 'Unknown');
-    }
-    throw Exception('Invalid category format: $json');
+    return Category(name: json.toString());
   }
 
   Map<String, dynamic> toJson() => {'name': name};

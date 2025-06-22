@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import '../widgets/custom_text_field.dart';
 import 'register_screen.dart';
 import 'home_screen.dart';
 import '../constants/app_colors.dart';
@@ -16,7 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _rememberMe = false;
   final AuthService _authService = AuthService();
   bool _isLoading = false;
 
@@ -27,17 +25,14 @@ class _LoginScreenState extends State<LoginScreen> {
         final user = await _authService.login(
           email: _emailController.text,
           password: _passwordController.text,
-          rememberMe: _rememberMe,
         );
         if (user != null && mounted) {
-          print('Login successful, navigating to HomeScreen');
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         } else {
           if (mounted) {
-            print('Login failed: No user data');
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Login failed: No user data')),
             );
@@ -45,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         if (mounted) {
-          print('Login Error: $e');
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
@@ -78,28 +72,44 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 40),
-                    const Text(
-                      'Welcome Back!',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.white,
-                      ),
-                    ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Login to your account',
-                      style: TextStyle(fontSize: 16, color: AppColors.white),
+                      'Login',
+                      style: TextStyle(fontSize: 30, color: AppColors.white),
                     ),
                     const SizedBox(height: 40),
-                    CustomTextField(
-                      label: 'Email',
+
+                    // Email
+                    TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
+                      style: const TextStyle(color: AppColors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        labelStyle: const TextStyle(color: AppColors.white),
+                        hintStyle: const TextStyle(color: AppColors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.red),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorStyle: const TextStyle(color: AppColors.red),
+                      ),
                       validator: (value) {
-                        if (value == null || value.isEmpty)
+                        if (value == null || value.isEmpty) {
                           return 'Email is required';
+                        }
                         if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                           return 'Enter a valid email';
                         }
@@ -107,28 +117,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    CustomTextField(
-                      label: 'Password',
+
+                    // Password
+                    TextFormField(
                       controller: _passwordController,
                       obscureText: true,
+                      style: const TextStyle(color: AppColors.white),
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        labelStyle: const TextStyle(color: AppColors.white),
+                        hintStyle: const TextStyle(color: AppColors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.red),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: AppColors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorStyle: const TextStyle(color: AppColors.red),
+                      ),
                       validator: (value) {
-                        if (value == null || value.isEmpty)
+                        if (value == null || value.isEmpty) {
                           return 'Password is required';
+                        }
                         return null;
                       },
                     ),
-                    CheckboxListTile(
-                      title: const Text(
-                        'Remember Me',
-                        style: TextStyle(color: AppColors.white),
-                      ),
-                      value: _rememberMe,
-                      onChanged: (value) =>
-                          setState(() => _rememberMe = value!),
-                      checkColor: AppColors.white,
-                      activeColor: AppColors.primaryBlue,
-                    ),
                     const SizedBox(height: 16),
+
+                    // Login Button
                     _isLoading
                         ? const CircularProgressIndicator(
                             color: AppColors.white,
@@ -141,6 +167,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                     const SizedBox(height: 16),
+
+                    // Register link
                     TextButton(
                       onPressed: () {
                         Navigator.push(

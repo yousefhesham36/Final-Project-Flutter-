@@ -27,7 +27,6 @@ class CategoryCard extends StatelessWidget {
             ),
           );
         },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }

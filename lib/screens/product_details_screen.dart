@@ -19,22 +19,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   Future<void> _addToCart() async {
     final prefs = await SharedPreferences.getInstance();
-    final cartJson = prefs.getString('cart') ?? '[]';
-    final cart = (jsonDecode(cartJson) as List)
-        .map((item) => CartItem.fromJson(item))
+    final cart = (jsonDecode(prefs.getString('cart') ?? '[]') as List)
+        .map((e) => CartItem.fromJson(e))
         .toList();
-    final existingItem = cart.firstWhere(
+
+    final index = cart.indexWhere(
       (item) => item.product.id == widget.product.id,
-      orElse: () => CartItem(product: widget.product, quantity: 0),
     );
-    if (existingItem.quantity == 0) {
+
+    if (index == -1) {
       cart.add(CartItem(product: widget.product, quantity: _quantity));
     } else {
-      existingItem.quantity += _quantity;
+      cart[index].quantity += _quantity;
     }
-    final newCartJson = jsonEncode(cart.map((item) => item.toJson()).toList());
-    await prefs.setString('cart', newCartJson);
-    print('Cart updated: $newCartJson'); // Debug print
+
+    await prefs.setString(
+      'cart',
+      jsonEncode(cart.map((e) => e.toJson()).toList()),
+    );
+
     if (mounted) {
       ScaffoldMessenger.of(
         context,
@@ -185,7 +188,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                       ),
                       onPressed: _addToCart,
-                      icon: const Icon(Icons.add_shopping_cart),
+                      icon: const Icon(
+                        Icons.add_shopping_cart,
+                        color: Colors.blue,
+                      ),
                       label: const Text(
                         'Add to Cart',
                         style: TextStyle(fontSize: 18, color: Colors.white),
